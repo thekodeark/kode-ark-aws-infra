@@ -32,7 +32,7 @@ resource "aws_s3_bucket" "this" {
 # Rule 1 to define the bucket policy
 resource "aws_s3_bucket_policy" "this" {
   bucket = aws_s3_bucket.this.id
-  policy = jsondecode({
+  policy = jsonencode({
     Version = "2012-10-17"
     Id      = "StaticWebSite"
     Statement = [
