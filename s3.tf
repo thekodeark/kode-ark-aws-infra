@@ -62,6 +62,9 @@ data "aws_iam_policy_document" "this" {
     actions = [
       "s3:GetObject"
     ]
-    principals = "*"
+    principals {
+      identifiers = ["*"]
+      type        = "*"
+    }
   }
 }
