@@ -32,20 +32,36 @@ resource "aws_s3_bucket" "this" {
 # Rule 1 to define the bucket policy
 resource "aws_s3_bucket_policy" "this" {
   bucket = aws_s3_bucket.this.id
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Id      = "StaticWebSite"
-    Statement = [
-      {
-        Sid       = "ReadOnlyAccess"
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource = [
-          aws_s3_bucket.this.arn,
-          "${aws_s3_bucket.this.arn}/*"
-        ]
-      }
+  #  policy = jsonencode({
+  #    Version = "2012-10-17"
+  #    Id      = "StaticWebSite"
+  #    Statement = [
+  #      {
+  #        Sid       = "ReadOnlyAccess"
+  #        Effect    = "Allow"
+  #        Principal = "*"
+  #        Action    = "s3:GetObject"
+  #        Resource = [
+  #          aws_s3_bucket.this.arn,
+  #          "${aws_s3_bucket.this.arn}/*"
+  #        ]
+  #      }
+  #    ]
+  #  })
+  policy = data.aws_iam_policy_document.this.json
+}
+
+#Rule2 of Policy Document
+data "aws_iam_policy_document" "this" {
+  statement {
+    effect = "Allow"
+    resources = [
+      aws_s3_bucket.this.arn,
+      "${aws_s3_bucket.this.arn}/*"
     ]
-  })
+    actions = [
+      "s3:GetObject"
+    ]
+    principals = "*"
+  }
 }
