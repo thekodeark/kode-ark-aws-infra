@@ -27,6 +27,26 @@ resource "aws_s3_bucket" "this" {
     index_document = "index.html"
     error_document = "error.html"
   }
+  versioning {
+    enabled = true
+  }
+  lifecycle_rule {
+    enabled = true
+    noncurrent_version_expiration {
+      days = 120
+    }
+
+    noncurrent_version_transition {
+      storage_class = "GLACIER"
+      days          = 60
+    }
+
+    noncurrent_version_transition {
+      storage_class = "IA_ZONE"
+      days          = 30
+    }
+
+  }
 }
 
 # Rule 1 to define the bucket policy
