@@ -42,10 +42,18 @@ resource "aws_s3_bucket" "this" {
     }
 
     noncurrent_version_transition {
-      storage_class = "IA_ZONE"
+      storage_class = "ONEZONE_IA"
       days          = 30
     }
 
+    transition {
+      storage_class = "STANDARD_IA"
+      days          = 30
+    }
+
+    expiration {
+      days = 120
+    }
   }
 }
 
