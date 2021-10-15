@@ -16,4 +16,36 @@ resource "aws_s3_bucket" "this" {
     target_bucket = aws_s3_bucket.log.id
     target_prefix = "log"
   }
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = ["*"]
+    expose_headers  = ["ETag"]
+    max_age_seconds = 3000
+  }
+  website {
+    index_document = "index.html"
+    error_document = "error.html"
+  }
+}
+
+# Rule 1 to define the bucket policy
+resource "aws_s3_bucket_policy" "this" {
+  bucket = aws_s3_bucket.this.id
+  policy = jsondecode({
+    Version = "2012-10-17"
+    Id      = "StaticWebSite"
+    Statement = [
+      {
+        Sid       = "ReadOnlyAccess"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:GetObject"
+        Resource = [
+          aws_s3_bucket.this.arn,
+          "${aws_s3_bucket.this.arn}/*"
+        ]
+      }
+    ]
+  })
 }
